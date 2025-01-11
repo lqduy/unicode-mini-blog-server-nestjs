@@ -1,0 +1,94 @@
+Table permissions {
+  id int [primary key, increment]
+  permission_name varchar [unique]
+  description text
+  updated_at timestamp [default: `current_timestamp`]
+  created_at timestamp [default: `current_timestamp`]
+}
+
+Table roles {
+  id int [primary key, increment]
+  role_name varchar [unique]
+  permissions text
+  updated_at timestamp [default: `current_timestamp`]
+  created_at timestamp [default: `current_timestamp`]
+}
+
+Table roles_permissions {
+  role_id int [ref: > roles.id]
+  permission_id int [ref: > permissions.id]
+  updated_at timestamp [default: `current_timestamp`]
+  created_at timestamp [default: `current_timestamp`]
+
+  indexes {
+    (role_id, permission_id) [unique]
+  }
+}
+
+Table users {
+  id int [primary key, increment]
+  email varchar [unique]
+  password varchar
+  avatar_url varchar
+  is_verified bool [default: false]
+  updated_at timestamp [default: `current_timestamp`]
+  created_at timestamp [default: `current_timestamp`]
+}
+
+Table user_roles {
+  user_id int [ref: > users.id]
+  role_id int [ref: > roles.id]
+  updated_at timestamp
+  created_at timestamp
+
+  indexes {
+    (user_id, role_id) [unique]
+  }
+}
+
+Table posts {
+  id int [primary key, increment]
+  title varchar(255)
+  body text
+  user_id int [ref: > users.id]
+  is_edited boolean [default: false]
+  is_published boolean [default: false]
+  is_destroyed boolean [default: false]
+  updated_at timestamp [default: `current_timestamp`]
+  created_at timestamp [default: `current_timestamp`]
+}
+
+Table user_post_likes {
+  post_id int [not null, ref: > posts.id]
+  user_id int [not null, ref: > users.id]
+  created_at timestamp [default: `current_timestamp`]
+
+  indexes {
+    (post_id, user_id) [unique]
+  }
+}
+
+Table user_post_comments {
+  post_id int [not null, ref: > posts.id]
+  user_id int [not null, ref: > users.id]
+  content text
+  is_edited bool [default: false]
+  is_destroyed boolean [default: false]
+  updated_at timestamp [default: `current_timestamp`]
+  created_at timestamp [default: `current_timestamp`]
+}
+
+Table tags {
+  id int [primary key, increment]
+  name varchar [unique]
+}
+
+Table post_tags {
+  post_id int [ref: > posts.id]
+  tag_id int [ref: > tags.id]
+  created_at timestamp [default: `current_timestamp`]
+
+  indexes {
+    (post_id, tag_id) [unique]
+  }
+}
