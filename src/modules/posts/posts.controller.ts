@@ -18,6 +18,7 @@ export class PostsController {
 
   @Post()
   create(@Body() createPostDto: CreatePostDto) {
+    console.log(process.env.DB_HOST);
     return this.postsService.create(createPostDto);
   }
 
