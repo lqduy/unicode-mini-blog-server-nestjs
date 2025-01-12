@@ -1,4 +1,12 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+
+import { User } from "@src/modules/users/entities/user.entity";
 
 @Entity("posts")
 export class Post {
@@ -11,9 +19,6 @@ export class Post {
   @Column({ type: "text" })
   body: string;
 
-  @Column({ type: "int" })
-  user_id: number;
-
   @Column({ type: "boolean", default: false })
   is_edited: boolean;
 
@@ -24,8 +29,16 @@ export class Post {
   is_destroyed: boolean;
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  created_at: Date;
+
+  @Column({
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP",
+    onUpdate: "CURRENT_TIMESTAMP",
+  })
   updated_at: Date;
 
-  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
-  created_at: Date;
+  @ManyToOne(() => User, (user) => user.posts, { onDelete: "CASCADE" })
+  @JoinColumn({ name: "user_id" })
+  user: User;
 }
