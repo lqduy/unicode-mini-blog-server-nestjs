@@ -36,6 +36,7 @@ const bootstrap = async () => {
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   app.setGlobalPrefix("api/v1");
+  app.enableCors();
   await app.listen(process.env.PORT ?? 8080);
 };
 bootstrap();
