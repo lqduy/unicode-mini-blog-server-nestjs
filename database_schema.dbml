@@ -1,3 +1,6 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
 Table permissions {
   id int [primary key, increment]
   permission_name varchar [unique]
@@ -28,6 +31,7 @@ Table roles_permissions {
 Table users {
   id int [primary key, increment]
   email varchar [unique]
+  role_id int [ref: > roles.id]
   password varchar
   avatar_url varchar
   is_verified bool [default: false]
@@ -35,23 +39,12 @@ Table users {
   created_at timestamp [default: `current_timestamp`]
 }
 
-Table user_roles {
-  user_id int [ref: > users.id]
-  role_id int [ref: > roles.id]
-  updated_at timestamp
-  created_at timestamp
-
-  indexes {
-    (user_id, role_id) [unique]
-  }
-}
-
 Table posts {
   id int [primary key, increment]
   title varchar(255)
   body text
   user_id int [ref: > users.id]
-  is_edited boolean [default: false]
+  is_edited bool [default: false]
   is_published boolean [default: false]
   is_destroyed boolean [default: false]
   updated_at timestamp [default: `current_timestamp`]
