@@ -2,6 +2,8 @@ import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
+import { Post } from "@src/modules/posts/entities/post.entity";
+
 import { PostsModule } from "./modules/posts/posts.module";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
@@ -16,7 +18,7 @@ import { AppService } from "./app.service";
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [],
+      entities: [Post],
       synchronize: true,
       ssl: true,
     }),
