@@ -19,7 +19,6 @@ export class PostsService {
 
   findAll() {
     return this.postsRepository.find({
-      select: ["id", "title", "content"],
       order: { created_at: "DESC" },
     });
   }
