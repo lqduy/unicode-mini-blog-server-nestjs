@@ -16,7 +16,7 @@ export class User {
   @Column({ type: "varchar", length: 255 })
   password: string;
 
-  @Column({ type: "varchar", length: 255 })
+  @Column({ type: "varchar", length: 255, nullable: true, default: null })
   avatar_url: string;
 
   @Column({ type: "boolean", default: false })

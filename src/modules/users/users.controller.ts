@@ -16,8 +16,8 @@ import { UsersService } from "./users.service";
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
+  @Post("register")
+  register(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
@@ -26,10 +26,10 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.usersService.findOne(+id);
-  }
+  // @Get(":id")
+  // findOne(@Param("id") id: string) {
+  //   return this.usersService.findOne(+id);
+  // }
 
   @Patch(":id")
   update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
