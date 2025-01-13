@@ -62,6 +62,34 @@ export class UsersService {
     return { access_token: accessToken, refresh_token: refreshToken };
   }
 
+  async getCurrentUser(email: string) {
+    const user = await this.usersRepository
+      .createQueryBuilder("user")
+      .leftJoinAndSelect("user.posts", "post")
+      .where("user.email = :email", { email })
+      .andWhere("post.is_published = :isPublished", { isPublished: true })
+      .andWhere("post.is_destroyed = :isDestroyed", { isDestroyed: false })
+      .getOne();
+    const {
+      id,
+      role_id,
+      avatar_url,
+      created_at,
+      updated_at,
+      is_verified,
+      posts,
+    } = user;
+    return {
+      id,
+      role_id,
+      avatar_url,
+      is_verified,
+      created_at,
+      updated_at,
+      total_posts: posts?.length || 0,
+    };
+  }
+
   findAll() {
     return "This action returns all users";
   }

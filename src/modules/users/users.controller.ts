@@ -6,8 +6,12 @@ import {
   Param,
   Patch,
   Post,
+  Req,
+  UseGuards,
 } from "@nestjs/common";
 
+import { AuthGuard } from "@src/guards/auth/auth.guard";
+import { UserJwtPayload } from "@src/schemas/common";
 import { ResponseHandler } from "@src/utils/response-handler";
 
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -28,6 +32,13 @@ export class UsersController {
   async login(@Body() loginUserDto: LoginUserDto) {
     const data = await this.usersService.login(loginUserDto);
     return ResponseHandler.success({ data, message: "Login Successful" });
+  }
+
+  @Get("me")
+  @UseGuards(AuthGuard)
+  async me(@Req() req: Request & { user: UserJwtPayload }) {
+    const { email } = req.user;
+    return this.usersService.getCurrentUser(email);
   }
 
   @Get()
