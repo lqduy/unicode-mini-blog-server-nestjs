@@ -28,7 +28,7 @@ module.exports = {
       },
     ],
     "@typescript-eslint/indent": 0,
-    "@typescript-eslint/no-explicit-any": 2,
+    "@typescript-eslint/no-explicit-any": 0,
     "@typescript-eslint/explicit-module-boundary-types": 0,
     "no-return-await": "off",
     "@typescript-eslint/return-await": "error",
