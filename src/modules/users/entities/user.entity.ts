@@ -19,6 +19,9 @@ export class User {
   @Column({ type: "varchar", length: 255, nullable: true, default: null })
   avatar_url: string;
 
+  @Column({ type: "varchar", length: 255, nullable: true, default: null })
+  verify_token: string;
+
   @Column({ type: "boolean", default: false })
   is_verified: boolean;
 
