@@ -1,4 +1,5 @@
 import { HttpStatus, Injectable } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
@@ -6,7 +7,6 @@ import { UserJwtPayload } from "@src/schemas/common";
 import { APIError } from "@src/utils/api-error";
 import { generateUUID } from "@src/utils/common";
 import Hasher from "@src/utils/hasher";
-import { Jwt } from "@src/utils/jwt";
 
 import { CreateUserDto } from "./dto/create-user.dto";
 import { LoginUserDto } from "./dto/login-user.dto";
@@ -16,7 +16,8 @@ import { User } from "./entities/user.entity";
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User) private readonly usersRepository: Repository<User>
+    @InjectRepository(User) private readonly usersRepository: Repository<User>,
+    private readonly jwtService: JwtService
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -48,17 +49,15 @@ export class UsersService {
       role: existingUser.role_id,
     };
 
-    const accessToken = Jwt.generateToken(
-      tokenPayload,
-      process.env.ACCESS_TOKEN_SECRET_SIGNATURE,
-      process.env.ACCESS_TOKEN_LIFE
-    );
+    const accessToken = this.jwtService.sign(tokenPayload, {
+      secret: process.env.ACCESS_TOKEN_SECRET_SIGNATURE,
+      expiresIn: process.env.ACCESS_TOKEN_LIFE,
+    });
 
-    const refreshToken = Jwt.generateToken(
-      tokenPayload,
-      process.env.REFRESH_TOKEN_SECRET_SIGNATURE,
-      process.env.REFRESH_TOKEN_LIFE
-    );
+    const refreshToken = this.jwtService.sign(tokenPayload, {
+      secret: process.env.REFRESH_TOKEN_SECRET_SIGNATURE,
+      expiresIn: process.env.REFRESH_TOKEN_LIFE,
+    });
 
     return { access_token: accessToken, refresh_token: refreshToken };
   }

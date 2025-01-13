@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+import { JwtModule } from "@nestjs/jwt";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { EmailExisting } from "@src/rules/email-existing.rule";
@@ -11,6 +12,6 @@ import { UsersService } from "./users.service";
 @Module({
   controllers: [UsersController],
   providers: [UsersService, EmailUnique, EmailExisting],
-  imports: [TypeOrmModule.forFeature([User])],
+  imports: [TypeOrmModule.forFeature([User]), JwtModule.register({})],
 })
 export class UsersModule {}
