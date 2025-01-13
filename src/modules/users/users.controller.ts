@@ -8,7 +8,10 @@ import {
   Post,
 } from "@nestjs/common";
 
+import { ResponseHandler } from "@src/utils/response-handler";
+
 import { CreateUserDto } from "./dto/create-user.dto";
+import { LoginUserDto } from "./dto/login-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { UsersService } from "./users.service";
 
@@ -21,15 +24,16 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  @Post("login")
+  async login(@Body() loginUserDto: LoginUserDto) {
+    const data = await this.usersService.login(loginUserDto);
+    return ResponseHandler.success({ data, message: "Login Successful" });
+  }
+
   @Get()
   findAll() {
     return this.usersService.findAll();
   }
-
-  // @Get(":id")
-  // findOne(@Param("id") id: string) {
-  //   return this.usersService.findOne(+id);
-  // }
 
   @Patch(":id")
   update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
