@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
@@ -70,8 +70,29 @@ export class PostsService {
     };
   }
 
+  async getDetails(postId: number) {
+    const post = await this.postsRepository.findOne({
+      where: { id: postId },
+      relations: ["user"],
+    });
+
+    if (!post) {
+      throw new APIError("Post not found", HttpStatus.NOT_FOUND);
+    }
+
+    const { id, title, body, is_published, created_at, user } = post;
+    return {
+      id,
+      title,
+      body,
+      is_published,
+      created_at,
+      user: { id: user.id, email: user.email, role: user.role_id },
+    };
+  }
+
   findOne(id: number) {
-    return `This action returns a #${id} post`;
+    return this.postsRepository.findOne({ where: { id } });
   }
 
   update(id: number, updatePostDto: UpdatePostDto) {
