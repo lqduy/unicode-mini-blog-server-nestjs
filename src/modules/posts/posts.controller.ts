@@ -6,7 +6,11 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from "@nestjs/common";
+
+import CurrentUser from "@src/decorators/current-user.decorator";
+import { AuthGuard } from "@src/guards/auth/auth.guard";
 
 import { CreatePostDto } from "./dto/create-post.dto";
 import { UpdatePostDto } from "./dto/update-post.dto";
@@ -17,9 +21,12 @@ export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Post()
-  create(@Body() createPostDto: CreatePostDto) {
-    console.log(process.env.DB_HOST);
-    return this.postsService.create(createPostDto);
+  @UseGuards(AuthGuard)
+  create(
+    @Body() createPostDto: CreatePostDto,
+    @CurrentUser("id") userId: number
+  ) {
+    return this.postsService.create(createPostDto, userId);
   }
 
   @Get()

@@ -16,6 +16,8 @@ const bootstrap = async () => {
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
       exceptionFactory: (errors: ValidationError[]) => {
         const formattedErrors = errors.map((error) => ({
           [error.property]: Object.values(error.constraints),
