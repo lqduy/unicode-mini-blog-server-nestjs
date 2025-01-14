@@ -1,10 +1,12 @@
 import {
   CanActivate,
   ExecutionContext,
+  HttpException,
+  HttpStatus,
   Injectable,
   UnauthorizedException,
 } from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
+import { JwtService, TokenExpiredError } from "@nestjs/jwt";
 import { Request } from "express";
 
 import { UsersService } from "@src/modules/users/users.service";
@@ -22,7 +24,7 @@ export class AuthGuard implements CanActivate {
     const accessToken = this.extractTokenFromHeader(request);
 
     if (!accessToken) {
-      throw new UnauthorizedException("Unauthorized");
+      throw new UnauthorizedException("Unauthorized: Token not found");
     }
 
     try {
@@ -31,13 +33,9 @@ export class AuthGuard implements CanActivate {
         { secret: process.env.ACCESS_TOKEN_SECRET_SIGNATURE }
       );
 
-      if (!decodedUser) {
-        throw new UnauthorizedException("Unauthorized");
-      }
-
       const user = await this.usersService.findOneByEmail(decodedUser.email);
       if (!user) {
-        throw new UnauthorizedException("Unauthorized");
+        throw new UnauthorizedException("Unauthorized: User not found");
       }
 
       request.user = {
@@ -48,11 +46,24 @@ export class AuthGuard implements CanActivate {
 
       return true;
     } catch (e) {
+      if (this.checkTokenExpired(e)) {
+        throw new HttpException(
+          "Unauthorized: Token expired, please use refresh token",
+          HttpStatus.GONE
+        );
+      }
       throw new UnauthorizedException("Unauthorized: " + String(e));
     }
   }
 
   private extractTokenFromHeader(request: Request): string | null {
     return request.headers["authorization"] || null;
+  }
+
+  private checkTokenExpired(error: unknown): boolean {
+    return (
+      error instanceof TokenExpiredError ||
+      (error instanceof Error && error.message.includes("jwt expired"))
+    );
   }
 }
