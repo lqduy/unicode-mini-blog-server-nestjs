@@ -6,12 +6,11 @@ import {
   Param,
   Patch,
   Post,
-  Req,
   UseGuards,
 } from "@nestjs/common";
 
+import CurrentUser from "@src/decorators/current-user.decorator";
 import { AuthGuard } from "@src/guards/auth/auth.guard";
-import { UserJwtPayload } from "@src/schemas/common";
 import { ResponseHandler } from "@src/utils/response-handler";
 
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -36,8 +35,7 @@ export class UsersController {
 
   @Get("me")
   @UseGuards(AuthGuard)
-  async me(@Req() req: Request & { user: UserJwtPayload }) {
-    const { email } = req.user;
+  async me(@CurrentUser("email") email: string) {
     return this.usersService.getCurrentUser(email);
   }
 
