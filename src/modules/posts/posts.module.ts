@@ -3,6 +3,7 @@ import { JwtModule } from "@nestjs/jwt";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { Tag } from "@src/modules/tags/entities/tag.entity";
+import { TagsService } from "@src/modules/tags/tags.service";
 import { User } from "@src/modules/users/entities/user.entity";
 import { UsersService } from "@src/modules/users/users.service";
 
@@ -12,7 +13,7 @@ import { PostsService } from "./posts.service";
 
 @Module({
   controllers: [PostsController],
-  providers: [PostsService, UsersService],
+  providers: [PostsService, UsersService, TagsService],
   imports: [
     TypeOrmModule.forFeature([Post, User, Tag]),
     JwtModule.register({}),

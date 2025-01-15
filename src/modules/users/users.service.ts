@@ -94,6 +94,10 @@ export class UsersService {
     return "This action returns all users";
   }
 
+  async findOneById(id: number) {
+    return this.usersRepository.findOne({ where: { id } });
+  }
+
   async findOneByEmail(email: string) {
     return this.usersRepository.findOne({
       where: { email },

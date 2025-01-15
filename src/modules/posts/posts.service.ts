@@ -1,12 +1,13 @@
 import { HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { In, Repository } from "typeorm";
+import { Repository } from "typeorm";
 
-import { Tag } from "@src/modules/tags/entities/tag.entity";
-import { User } from "@src/modules/users/entities/user.entity";
+import { TagsService } from "@src/modules/tags/tags.service";
 import { ResponseItems } from "@src/schemas/common";
 import { APIError } from "@src/utils/api-error";
-import { generateUUID, getPagination } from "@src/utils/common";
+import { getPagination } from "@src/utils/common";
+
+import { UsersService } from "../users/users.service";
 
 import { CreatePostDto } from "./dto/create-post.dto";
 import { GetPostsDto } from "./dto/get-posts.dto";
@@ -17,14 +18,12 @@ import { Post } from "./entities/post.entity";
 export class PostsService {
   constructor(
     @InjectRepository(Post) private readonly postsRepository: Repository<Post>,
-    @InjectRepository(User) private readonly usersRepository: Repository<User>,
-    @InjectRepository(Tag) private readonly tagsRepository: Repository<Tag>
+    private readonly usersService: UsersService,
+    private readonly tagsService: TagsService
   ) {}
 
   async create(createPostDto: CreatePostDto, userId: number) {
-    const currentUser = await this.usersRepository.findOne({
-      where: { id: userId },
-    });
+    const currentUser = await this.usersService.findOneById(userId);
     if (!currentUser) {
       throw new APIError("User not found");
     }
@@ -42,9 +41,7 @@ export class PostsService {
 
     // Select tags
     if (uniqueSelectingTags.length) {
-      const existingTags = await this.tagsRepository.find({
-        where: { id: In(uniqueSelectingTags) },
-      });
+      const existingTags = await this.tagsService.findMany(uniqueSelectingTags);
 
       if (existingTags.length !== selecting_tags.length) {
         throw new APIError(
@@ -58,27 +55,12 @@ export class PostsService {
 
     // Create tags
     if (uniqueTypingTags.length) {
-      const existingTags = await this.tagsRepository.find({
-        where: { name: In(uniqueTypingTags) },
-      });
-
-      const existingTagNames = existingTags.map((tag) => tag.name);
-
-      const tagsToCreate = uniqueTypingTags.filter(
-        (tag) =>
-          !existingTagNames.includes(tag) && !tags.some((t) => t.name === tag)
-      );
-
-      if (tagsToCreate.length) {
-        const newTags = tagsToCreate.map((tag) =>
-          this.tagsRepository.create({ id: generateUUID(), name: tag })
-        );
-        await this.tagsRepository.save(newTags);
-        tags.push(...newTags);
-      }
+      const { existingTags, createdTags } =
+        await this.tagsService.createMany(uniqueTypingTags);
 
       tags.push(
-        ...existingTags.filter((tag) => tags.every((t) => t.id !== tag.id))
+        ...createdTags,
+        ...existingTags.filter((tag) => !tags.some((t) => t.id === tag.id))
       );
     }
 
