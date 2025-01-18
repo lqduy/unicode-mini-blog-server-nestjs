@@ -134,6 +134,21 @@ export class PostsService {
     };
   }
 
+  async remove(postId: number) {
+    const post = await this.postsRepository.findOne({
+      where: { id: postId },
+      relations: ["tags"],
+    });
+    post.tags = [];
+    await this.postsRepository.save(post);
+
+    await this.postsRepository.delete(postId);
+    return {
+      id: post.id,
+      title: post.title,
+    };
+  }
+
   findOne(id: number) {
     return this.postsRepository.findOne({ where: { id } });
   }
@@ -141,9 +156,5 @@ export class PostsService {
   update(id: number, updatePostDto: UpdatePostDto) {
     console.log(updatePostDto);
     return `This action updates a #${id} post`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} post`;
   }
 }
