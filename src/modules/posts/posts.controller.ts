@@ -14,6 +14,7 @@ import CurrentUser from "@src/decorators/current-user.decorator";
 import { AuthGuard } from "@src/guards/auth/auth.guard";
 
 import { CreatePostDto } from "./dto/create-post.dto";
+import { DeletePostDto } from "./dto/delete_post.dto";
 import { GetPostsDto } from "./dto/get-posts.dto";
 import { UpdatePostDto } from "./dto/update-post.dto";
 import { PostsService } from "./posts.service";
@@ -47,7 +48,7 @@ export class PostsController {
   }
 
   @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.postsService.remove(+id);
+  remove(@Param() params: DeletePostDto) {
+    return this.postsService.remove(params.id);
   }
 }

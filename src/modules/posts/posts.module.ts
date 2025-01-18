@@ -6,6 +6,7 @@ import { Tag } from "@src/modules/tags/entities/tag.entity";
 import { TagsService } from "@src/modules/tags/tags.service";
 import { User } from "@src/modules/users/entities/user.entity";
 import { UsersService } from "@src/modules/users/users.service";
+import { PostExisting } from "@src/rules/post-existing.rule";
 
 import { Post } from "./entities/post.entity";
 import { PostsController } from "./posts.controller";
@@ -13,7 +14,7 @@ import { PostsService } from "./posts.service";
 
 @Module({
   controllers: [PostsController],
-  providers: [PostsService, UsersService, TagsService],
+  providers: [PostsService, UsersService, TagsService, PostExisting],
   imports: [
     TypeOrmModule.forFeature([Post, User, Tag]),
     JwtModule.register({}),
