@@ -16,9 +16,6 @@ RUN pnpm install
 # Copy all application files
 COPY . .
 
-# Copy .env.production to .env
-COPY .env.production .env
-
 # Build the application
 RUN pnpm run build
 
