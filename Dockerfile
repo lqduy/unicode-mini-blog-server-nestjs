@@ -23,7 +23,7 @@ RUN pnpm run build
 RUN pnpm prune --prod --no-optional --ignore-scripts
 
 # Expose the application port
-EXPOSE 8080
+EXPOSE 8001
 
 # Use the non-root user provided by the Node.js image
 USER node

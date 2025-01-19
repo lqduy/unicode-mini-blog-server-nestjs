@@ -4,7 +4,17 @@ services:
     build: ./
     env_file:
       - .env.production
+    ports:
+      - "8001:8001"
+    networks:
+      - my_network
   nginx:
     build: ./nginx
     ports:
-      - 8080:8080
+      - "3001:3001"
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge
