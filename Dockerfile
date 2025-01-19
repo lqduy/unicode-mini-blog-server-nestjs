@@ -19,8 +19,8 @@ COPY . .
 # Build the application
 RUN pnpm run build
 
-# Remove devDependencies to optimize production image
-RUN pnpm prune --prod
+# Prune devDependencies without running lifecycle scripts
+RUN pnpm prune --prod --no-optional --ignore-scripts
 
 # Expose the application port
 EXPOSE 8080
