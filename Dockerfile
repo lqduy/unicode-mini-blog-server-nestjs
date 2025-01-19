@@ -19,6 +19,9 @@ COPY . .
 # Build the application
 RUN pnpm run build
 
+# Copy the build output into the container
+COPY ./dist ./dist
+
 # Prune devDependencies without running lifecycle scripts
 RUN pnpm prune --prod --no-optional --ignore-scripts
 
