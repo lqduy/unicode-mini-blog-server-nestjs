@@ -3,7 +3,7 @@ services:
   nestjs:
     build: ./
     env_file:
-      - .env
+      - .env.production
   nginx:
     build: ./nginx
     ports:
