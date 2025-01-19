@@ -22,6 +22,9 @@ RUN pnpm run build
 # Prune devDependencies without running lifecycle scripts
 RUN pnpm prune --prod --no-optional --ignore-scripts
 
+# Set environment variable for port
+ENV PORT=8001
+
 # Expose the application port
 EXPOSE 8001
 

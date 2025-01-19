@@ -8,12 +8,16 @@ services:
       - "8001:8001"
     networks:
       - my_network
+    volumes:
+      - ./app:/usr/app
   nginx:
     build: ./nginx
     ports:
       - "3001:3001"
     networks:
       - my_network
+    volumes:
+      - ./nginx/config:/etc/nginx/conf.d
 
 networks:
   my_network:
