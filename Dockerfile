@@ -11,7 +11,7 @@ RUN npm install --global pm2 pnpm
 COPY package.json pnpm-lock.yaml ./
 
 # Install dependencies using pnpm
-RUN pnpm install --prod
+RUN pnpm install --prod --ignore-scripts
 
 # Copy all application files
 COPY . .
