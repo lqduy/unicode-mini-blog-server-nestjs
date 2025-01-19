@@ -29,4 +29,4 @@ EXPOSE 8001
 USER node
 
 # Run the application using PM2
-CMD ["pm2-runtime", "start", "dist/main.js"]
+CMD ["pm2-runtime", "dist/main.js"]
