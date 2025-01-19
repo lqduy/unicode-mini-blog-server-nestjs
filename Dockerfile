@@ -7,17 +7,20 @@ WORKDIR /usr/app
 # Install PM2 and pnpm globally
 RUN npm install --global pm2 pnpm
 
-# Copy "package.json", "pnpm-lock.yaml", and other necessary files to leverage Docker caching
+# Copy "package.json" and "pnpm-lock.yaml"
 COPY package.json pnpm-lock.yaml ./
 
-# Install dependencies using pnpm
-RUN pnpm install --prod --ignore-scripts
+# Install all dependencies (including devDependencies)
+RUN pnpm install
 
 # Copy all application files
 COPY . .
 
 # Build the application
 RUN pnpm run build
+
+# Remove devDependencies to optimize production image
+RUN pnpm prune --prod
 
 # Expose the application port
 EXPOSE 8080
