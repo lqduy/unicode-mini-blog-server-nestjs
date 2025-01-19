@@ -2,6 +2,8 @@ version: "3"
 services:
   nestjs:
     build: ./
+    env_file:
+      - .env
   nginx:
     build: ./nginx
     ports:
