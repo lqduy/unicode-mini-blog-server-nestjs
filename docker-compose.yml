@@ -10,6 +10,7 @@ services:
       - my_network
     volumes:
       - ./app:/usr/app
+
   nginx:
     build: ./nginx
     ports:
